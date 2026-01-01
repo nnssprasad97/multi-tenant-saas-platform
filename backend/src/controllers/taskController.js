@@ -1,5 +1,23 @@
-const db = require('../config/db');
+/**
+ * Task Management Controller
+ * Handles task CRUD operations within projects and multi-tenant system
+ * Enforces project and tenant isolation for task operations
+ * Supports:
+ *  - Creating tasks with project validation (API 16)
+ *  - Listing project tasks with tenant isolation
+ *  - Updating task status and details
+ *  - Deleting tasks with permission checks
+ *  - Task assignment and priority management
+ * 
+ * Routes:
+ *  - POST /api/projects/:projectId/tasks - Create new task
+ *  - GET /api/projects/:projectId/tasks - List project tasks
+ *  - PUT /api/tasks/:taskId - Update task details
+ *  - PATCH /api/tasks/:taskId/status - Update task status
+ *  - DELETE /api/tasks/:taskId - Delete task
+ */
 
+const db = require('../config/db');
 /**
  * 1. Create a New Task (API 16)
  */
