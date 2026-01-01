@@ -1,3 +1,10 @@
+-- Multi-Tenant SaaS Platform - Projects and Tasks Tables Migration
+-- Creates project and task management tables with complete tenant isolation
+-- Projects are associated with a tenant and track creation history
+-- Tasks belong to projects and can be assigned to team members
+-- Supports task status tracking (todo, in_progress, completed)
+-- Supports task priority levels (low, medium, high)
+
 CREATE TYPE project_status AS ENUM ('active', 'archived', 'completed');
 CREATE TYPE task_status AS ENUM ('todo', 'in_progress', 'completed');
 CREATE TYPE task_priority AS ENUM ('low', 'medium', 'high');
