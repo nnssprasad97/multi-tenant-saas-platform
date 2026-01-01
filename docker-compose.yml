@@ -1,3 +1,9 @@
+# Multi-Tenant SaaS Platform - Docker Compose Configuration
+# Production-ready containerization for database, backend API, and frontend
+# Services: PostgreSQL, Node.js API, React frontend
+# All services communicate via Docker internal network
+# Fixed port mappings: DB=5432, Backend=5000, Frontend=3000
+
 services:
 
   database:
