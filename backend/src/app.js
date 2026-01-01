@@ -1,3 +1,10 @@
+/**
+ * Multi-Tenant SaaS Platform - Express Application Entry Point
+ * Configures Express server with CORS, middleware, routes, and database connection
+ * Version: 1.0.0
+ * Author: Development Team
+ */
+
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
