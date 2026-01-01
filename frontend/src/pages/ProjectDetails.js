@@ -1,3 +1,44 @@
+/**
+ * Project Details Component
+ * 
+ * Detailed view component for a specific project in the Multi-Tenant SaaS platform.
+ * Displays project information, associated tasks, and project management operations.
+ * 
+ * Features:
+ * - Display detailed project information retrieved from route parameters
+ * - List all tasks associated with the project
+ * - Create new tasks within the project
+ * - Edit existing task information
+ * - Delete tasks with confirmation
+ * - Show/hide task creation and edit modals
+ * - Real-time task list updates
+ * - Loading states during API calls
+ * - Error handling for failed operations
+ * - Navigation back to projects list
+ * 
+ * Route Parameters:
+ * - projectId: ID of the project from URL parameters (useParams hook)
+ * 
+ * State Management:
+ * - projectId: Current project ID from route params
+ * - project: Project details object containing name, description, status
+ * - tasks: Array of tasks belonging to this project
+ * - setTasks: Function to update tasks array
+ * - showTaskModal: Boolean to toggle task creation modal
+ * - setShowTaskModal: Function to toggle modal visibility
+ * - isEditing: Boolean flag for task edit mode
+ * - setIsEditing: Function to toggle edit mode
+ * - currentTaskId: ID of task being edited
+ * - setCurrentTaskId: Function to set active task
+ * - newTask: Form data for creating/editing tasks
+ * - setNewTask: Function to update form data
+ * - loading: Loading state during API operations
+ * - user: Current authenticated user from localStorage
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @returns {React.ReactElement} Project details page with tasks management
+ */
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
