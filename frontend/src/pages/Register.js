@@ -1,3 +1,24 @@
+/**
+ * Register Component
+ * 
+ * This component handles tenant and admin user registration for the Multi-Tenant SaaS platform.
+ * It provides a form for new organizations to register with an admin user account.
+ * 
+ * Features:
+ * - Organization name input (tenantName)
+ * - Subdomain configuration for multi-tenant isolation
+ * - Admin email registration and secure password management
+ * - Admin full name registration
+ * - Real-time form validation and error handling
+ * - API integration with authAPI.registerTenant() endpoint
+ * - Navigation to login page after successful registration
+ * 
+ * The component manages form state using React hooks (useState) and handles
+ * asynchronous registration requests with proper error handling and user feedback.
+ * 
+ * @component
+ * @returns {React.ReactElement} Register form component with tenant setup fields
+ */
 import React, { useState } from 'react';
 import { authAPI } from '../services/api';
 import { useNavigate, Link } from 'react-router-dom';
