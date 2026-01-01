@@ -1,3 +1,9 @@
+/**
+ * Login Page Component
+ * Handles user authentication for both tenants and super admin
+ * Supports multi-tenant login with tenant subdomain verification
+ */
+
 import React, { useState } from 'react';
 import { authAPI } from '../services/api';
 import { useNavigate, Link } from 'react-router-dom';
