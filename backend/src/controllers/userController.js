@@ -1,5 +1,22 @@
-const db = require('../config/db');
+/**
+ * User Management Controller
+ * Handles user CRUD operations within tenant contexts
+ * Enforces subscription limits and tenant isolation
+ * Supports:
+ *  - Adding users to tenant (API 8) with plan limit checks
+ *  - Listing users by tenant
+ *  - Updating user information
+ *  - Deleting users with audit logging
+ *  - Admin role management per tenant
+ * 
+ * Routes:
+ *  - POST /api/tenants/:tenantId/users - Add new user to tenant
+ *  - GET /api/tenants/:tenantId/users - List tenant users
+ *  - PUT /api/users/:userId - Update user details
+ *  - DELETE /api/users/:userId - Remove user from tenant
+ */
 
+const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 
 
