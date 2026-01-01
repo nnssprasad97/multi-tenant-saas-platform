@@ -1,5 +1,11 @@
-const { Pool } = require('pg');
+/**
+ * Database Configuration
+ * PostgreSQL connection pooling and query management
+ * Used for all database operations across the application
+ * Enforces connection limits and query timeouts
+ */
 
+const { Pool } = require('pg');
 const pool = new Pool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
