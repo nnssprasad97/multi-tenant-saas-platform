@@ -1,3 +1,36 @@
+/**
+ * Users Management Component
+ * 
+ * Component for managing tenant users within the Multi-Tenant SaaS platform.
+ * Allows admins to view, create, and manage user accounts with various roles and permissions.
+ * 
+ * Features:
+ * - Display list of users in the current tenant
+ * - Add new users to the organization
+ * - Show/hide user creation modal
+ * - Edit existing user information
+ * - Delete users with confirmation
+ * - Fetch and display all users from API
+ * - Loading states during data fetch operations
+ * - Error handling for failed API requests
+ * - Modal for creating new users with email, full name, password, and role
+ * 
+ * State Management:
+ * - users: Array of user objects from the current tenant
+ * - showModal: Boolean to toggle user creation form visibility
+ * - loading: Loading indicator during API calls
+ * - newUser: Form data for creating new user account
+ * - currentUser: Current logged-in user information from localStorage
+ * 
+ * User Data Structure:
+ * - email: User email address (unique)
+ * - fullName: User full name
+ * - password: User account password (hashed in backend)
+ * - role: User role (admin, manager, user)
+ * 
+ * @component
+ * @returns {React.ReactElement} Users management interface with list and modal
+ */
 import React, { useEffect, useState, useCallback } from 'react';
 import api from '../services/api';
 
