@@ -1,5 +1,16 @@
-const db = require('../config/db');
-const bcrypt = require('bcryptjs');
+/**
+ * Authentication Controller
+ * Handles user registration, login, and JWT token management
+ * Supports both tenant-specific and super admin authentication
+ * 
+ * Routes:
+ *  - POST /api/auth/register-tenant - Register new tenant and admin user
+ *  - POST /api/auth/login - User login with email and password
+ *  - GET /api/auth/me - Get current user info
+ *  - POST /api/auth/logout - Logout user
+ */
+
+const db = require('../config/db');const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Add these console logs at the top of your login or register function just once to see the hashes
