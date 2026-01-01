@@ -1,5 +1,19 @@
-const db = require('../config/db');
-const bcrypt = require('bcryptjs');
+/**
+ * Tenant Management Controller
+ * Handles tenant operations including:
+ *  - Dashboard statistics (Super Admin and Tenant Admin views)
+ *  - Tenant retrieval and list operations
+ *  - Tenant status and subscription management
+ *  - Multi-tenancy data isolation verification
+ * 
+ * Routes:
+ *  - GET /api/tenants - Get all tenants (Super Admin only)
+ *  - GET /api/tenants/:tenantId - Get tenant details
+ *  - PUT /api/tenants/:tenantId - Update tenant information
+ *  - GET /api/tenants/:tenantId/dashboard - Dashboard statistics
+ */
+
+const db = require('../config/db');const bcrypt = require('bcryptjs');
 
 /**
  * 1. GET DASHBOARD STATS (API 5)
