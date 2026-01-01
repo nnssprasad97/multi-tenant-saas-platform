@@ -4,6 +4,19 @@
  * Version: 1.0.0
  * Author: Development Team
  */
+ * 
+ * Server Configuration:
+ *  - CORS: Enabled for cross-origin requests
+ *  - Authentication: JWT-based with middleware protection
+ *  - Database: PostgreSQL with connection pooling
+ *  - Multi-tenancy: Tenant isolation enforced at API level
+ *  - Error Handling: Centralized error response formatting
+ *  - Health Check: Endpoint for system status monitoring
+ * 
+ * Middleware Stack:
+ *  - Express CORS for cross-origin support
+ *  - Authentication middleware for protected routes
+ *  - Tenant context injection for request isolation
 
 const express = require('express');
 const cors = require('cors');
