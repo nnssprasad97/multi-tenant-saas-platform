@@ -66,3 +66,27 @@ All 19 endpoints are documented in docs/API.md. Key modules include:
 - PRD: docs/PRD.md (User personas and requirements).
 - Architecture: docs/architecture.md (ERD and System Design).
 - Technical Spec: docs/technical-spec.md (Setup and structure).
+
+
+## 📌 Development Highlights
+
+### Multi-Tenancy Implementation
+This project implements a robust shared-database, shared-schema multi-tenancy model with:
+- Complete tenant data isolation via `tenant_id` column filtering
+- Unique subdomain support for tenant identification
+- Subscription-based feature limits (user and project quotas)
+- Role-based access control with three distinct roles
+
+### Production-Ready Architecture
+- Docker containerization for easy deployment
+- PostgreSQL with connection pooling
+- JWT-based authentication with 24-hour token expiry
+- Comprehensive error handling and validation
+- Audit logging for compliance and security
+
+### Security Features
+- Password hashing with bcrypt
+- CORS configuration for secure cross-origin requests
+- Input validation on all endpoints
+- Foreign key constraints for data integrity
+- Tenant isolation at both application and database levels
