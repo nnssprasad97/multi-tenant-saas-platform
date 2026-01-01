@@ -1,5 +1,23 @@
-const jwt = require('jsonwebtoken');
+/**
+ * Authentication Middleware
+ * Handles JWT token verification and request authorization
+ * Enforces multi-tenant isolation and role-based access control
+ * 
+ * Functionality:
+ *  - JWT token extraction from Authorization header
+ *  - Token signature verification with secret key
+ *  - User context extraction from token payload
+ *  - Tenant isolation enforcement
+ *  - Error handling for invalid/expired tokens
+ *  - Support for Bearer token format
+ * 
+ * Usage:
+ *  - Applied to protected routes requiring authentication
+ *  - Extracts and validates JWT token
+ *  - Injects user and tenant info into request context
+ */
 
+const jwt = require('jsonwebtoken');
 
 
 const authenticate = (req, res, next) => {
