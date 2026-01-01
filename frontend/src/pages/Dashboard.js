@@ -1,3 +1,32 @@
+/**
+ * Dashboard Component
+ * 
+ * Main dashboard page for authenticated users in the Multi-Tenant SaaS platform.
+ * Displays personalized content based on user role and tenant context.
+ * 
+ * Features:
+ * - User authentication verification via localStorage and local state
+ * - Dashboard data fetching with async/await and error handling
+ * - Loading states for better user experience
+ * - Error handling and display mechanisms
+ * - Responsive layout for projects, tasks, and analytics
+ * - Real-time data synchronization with backend API
+ * - Conditional rendering based on user authentication status
+ * 
+ * State Management:
+ * - data: Dashboard content (projects, tasks, metrics)
+ * - loading: Loading state during API calls
+ * - error: Error messages from failed requests
+ * - user: Current authenticated user information from localStorage
+ * 
+ * Lifecycle:
+ * - Component mounts and verifies user authentication
+ * - Fetches dashboard data on mount and when dependencies change
+ * - Handles loading and error states gracefully
+ * 
+ * @component
+ * @returns {React.ReactElement} Dashboard page with personalized user content
+ */
 import React, { useEffect, useState } from 'react';
 
 import api from '../services/api';
