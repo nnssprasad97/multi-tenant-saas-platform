@@ -1,3 +1,37 @@
+/**
+ * Projects Management Component
+ * 
+ * Component for managing tenant projects in the Multi-Tenant SaaS platform.
+ * Provides functionality to view, create, edit, and delete projects within an organization.
+ * 
+ * Features:
+ * - Display list of projects for the current tenant
+ * - Create new projects with name and description
+ * - Edit existing project details
+ * - Delete projects with confirmation
+ * - Show/hide project creation and edit modals
+ * - Fetch all projects from the backend API
+ * - Real-time project status management
+ * - Loading and error state handling
+ * - User context validation
+ * 
+ * State Management:
+ * - projects: Array of project objects belonging to current tenant
+ * - setProjects: Function to update projects state
+ * - showModal: Boolean to toggle project creation modal
+ * - setShowModal: Function to toggle modal visibility
+ * - isEditing: Boolean flag for edit mode
+ * - setIsEditing: Function to toggle edit mode
+ * - currentProjectId: ID of project being edited
+ * - setCurrentProjectId: Function to set active project
+ * - newProject: Form data for creating/editing projects
+ * - setNewProject: Function to update form data
+ * - loading: Loading state during API operations
+ * - user: Current authenticated user from localStorage
+ * 
+ * @component
+ * @returns {React.ReactElement} Projects management interface with CRUD operations
+ */
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
