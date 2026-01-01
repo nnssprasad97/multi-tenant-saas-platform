@@ -1,5 +1,10 @@
-CREATE TYPE tenant_status AS ENUM ('active', 'suspended', 'trial');
-CREATE TYPE subscription_plan AS ENUM ('free', 'pro', 'enterprise');
+-- Multi-Tenant SaaS Platform - Tenants Table Migration
+-- Creates the tenants table for multi-tenant organization management
+-- Features: Subscription plans (free, pro, enterprise), status tracking, unique subdomain isolation
+-- Each tenant is an independent organization with configurable user and project limits
+-- Supports plan enforcement and tenant isolation at database schema level
+
+CREATE TYPE tenant_status AS ENUM ('active', 'suspended', 'trial');CREATE TYPE subscription_plan AS ENUM ('free', 'pro', 'enterprise');
 
 CREATE TABLE tenants (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
