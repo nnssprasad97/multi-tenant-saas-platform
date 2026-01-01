@@ -1,3 +1,9 @@
+-- Multi-Tenant SaaS Platform - Users Table Migration
+-- Creates users table with tenant isolation and proper constraints
+-- Each user is associated with a tenant via tenant_id foreign key
+-- Email uniqueness is enforced per tenant using UNIQUE constraint
+-- Supports three roles: super_admin (tenant_id=NULL), tenant_admin, user
+
 CREATE TYPE user_role AS ENUM ('super_admin', 'tenant_admin', 'user');
 
 CREATE TABLE users (
