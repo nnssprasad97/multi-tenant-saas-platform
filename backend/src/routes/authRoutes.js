@@ -1,5 +1,16 @@
-const express = require('express');
-const router = express.Router();
+/**
+ * Authentication Routes
+ * Defines public authentication endpoints for user registration and login
+ * 
+ * Routes:
+ *  - POST /api/auth/register-tenant - Register new tenant organization
+ *  - POST /api/auth/login - User login with credentials
+ *  - GET /api/auth/me - Get current authenticated user
+ *  - POST /api/auth/logout - Logout current user
+ *  - GET /api/health - System health check endpoint
+ */
+
+const express = require('express');const router = express.Router();
 const authController = require('../controllers/authController');
 const { authenticate } = require('../middleware/auth');
 const db = require('../config/db');
