@@ -1,5 +1,11 @@
-const express = require('express');
-const router = express.Router();
+/**
+ * Tenant Management Routes
+ * Defines protected endpoints for tenant administration
+ * Super Admin routes for global tenant management
+ * Tenant Admin routes for organization-specific operations
+ */
+
+const express = require('express');const router = express.Router();
 const tenantCtrl = require('../controllers/tenantController');
 const { authenticate, authorize } = require('../middleware/auth');
 
