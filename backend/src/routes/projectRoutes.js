@@ -1,5 +1,19 @@
-const express = require('express');
-const router = express.Router();
+/**
+ * Project Management Routes
+ * Defines protected endpoints for project CRUD operations
+ * Enforces authentication and tenant isolation
+ * 
+ * Routes:
+ *  - GET /api/projects - List all tenant projects
+ *  - POST /api/projects - Create new project
+ *  - GET /api/projects/:projectId - Get project details
+ *  - PUT /api/projects/:projectId - Update project
+ *  - DELETE /api/projects/:projectId - Delete project
+ *  - GET /api/projects/:projectId/tasks - Get project tasks
+ *  - POST /api/projects/:projectId/tasks - Create task
+ */
+
+const express = require('express');const router = express.Router();
 const projCtrl = require('../controllers/projectController');
 const taskCtrl = require('../controllers/taskController');
 const { authenticate, authorize } = require('../middleware/auth');
