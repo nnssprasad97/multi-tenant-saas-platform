@@ -1,3 +1,25 @@
+/**
+ * React Application Component
+ * Main entry point for the multi-tenant SaaS frontend application
+ * Handles routing, authentication state, and user context management
+ * 
+ * Features:
+ *  - Protected route handling with JWT token verification
+ *  - User authentication and session management
+ *  - Tenant context preservation across navigation
+ *  - Role-based UI rendering (Super Admin, Tenant Admin, User)
+ *  - Local storage persistence for authentication tokens
+ *  - Safe JSON parsing for user data retrieval
+ * 
+ * Pages Rendered:
+ *  - Login: Public authentication page
+ *  - Register: New tenant organization registration
+ *  - Dashboard: Tenant overview and statistics
+ *  - Projects: Project listing and management
+ *  - Users: Team member management
+ *  - ProjectDetails: Individual project view
+ */
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import Login from './pages/Login';
