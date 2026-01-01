@@ -1,5 +1,22 @@
-const db = require('../config/db');
+/**
+ * Project Management Controller
+ * Handles CRUD operations for projects within multi-tenant system
+ * Enforces tenant isolation and ensures users only access their projects
+ * Supports:
+ *  - Single project retrieval (API 13)
+ *  - Project listing with subscription limits
+ *  - Project creation with tenant validation
+ *  - Project updates and deletion
+ * 
+ * Routes:
+ *  - GET /api/projects/:projectId - Get project details
+ *  - GET /api/projects - List all projects for current tenant
+ *  - POST /api/projects - Create new project
+ *  - PUT /api/projects/:projectId - Update project
+ *  - DELETE /api/projects/:projectId - Delete project
+ */
 
+const db = require('../config/db');
 /**
  * 1. Fetch a single project by ID (API 13 equivalent)
  * SECURITY: Enforces isolation for regular users, global access for Super Admin.
