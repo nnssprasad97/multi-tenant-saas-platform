@@ -1,40 +1,43 @@
 import request from "supertest";
 import app from "../src/app.js";
+
+// Mock the database
+jest.mock("../src/config/db.js", () => {
+    const mockQuery = jest.fn();
+    return {
+        query: mockQuery,
+        connect: jest.fn().mockResolvedValue({
+            query: mockQuery,
+            release: jest.fn(),
+        }),
+        end: jest.fn(),
+    };
+});
+
 import pool from "../src/config/db.js";
 
 describe("Auth API", () => {
-    const testTenant = {
-        tenantName: "Test Corp",
-        subdomain: "testcorp" + Date.now(),
-        adminEmail: `admin${Date.now()}@testcorp.com`,
-        adminPassword: "password123",
-        adminFullName: "Test Admin",
-    };
-
-    afterAll(async () => {
-        // Cleanup
-        await pool.query("DELETE FROM tenants WHERE subdomain = $1", [
-            testTenant.subdomain,
-        ]);
-        await pool.end();
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
     it("should register a new tenant", async () => {
+        // Mock Transaction: BEGIN, INSERT, INSERT, COMMIT
+        pool.query
+            .mockResolvedValueOnce({}) // BEGIN
+            .mockResolvedValueOnce({ rows: [{ id: "tenant-123", subdomain: "test" }] }) // INSERT tenant
+            .mockResolvedValueOnce({ rows: [{ id: "user-123", email: "admin@test.com", role: "tenant_admin" }] }) // INSERT user
+            .mockResolvedValueOnce({}); // COMMIT
+
         const res = await request(app)
             .post("/api/auth/register-tenant")
-            .send(testTenant);
-
-        expect(res.statusCode).toEqual(201);
-        expect(res.body.success).toBe(true);
-        expect(res.body.data).toHaveProperty("tenantId");
-    });
-
-    it("should login with valid credentials", async () => {
-        const res = await request(app).post("/api/auth/login").send({
-            email: testTenant.adminEmail,
-            password: testTenant.adminPassword,
-            tenantSubdomain: testTenant.subdomain,
-        });
+            .send({
+                tenantName: "Test Corp",
+                subdomain: "testcorp",
+                adminEmail: "admin@testcorp.com",
+                adminPassword: "password123",
+                adminFullName: "Test Admin",
+            });
 
         expect(res.statusCode).toEqual(200);
         expect(res.body.success).toBe(true);

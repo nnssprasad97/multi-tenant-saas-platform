@@ -1,12 +1,13 @@
 import request from "supertest";
 import app from "../src/app.js";
-import pool from "../src/config/db.js";
+
+// Mock the database pool
+jest.mock("../src/config/db.js", () => ({
+    query: jest.fn().mockResolvedValue({ rows: [], rowCount: 1 }),
+    end: jest.fn(),
+}));
 
 describe("Health Check API", () => {
-    afterAll(async () => {
-        await pool.end();
-    });
-
     it("should return 200 OK", async () => {
         const res = await request(app).get("/api/health");
         expect(res.statusCode).toEqual(200);
