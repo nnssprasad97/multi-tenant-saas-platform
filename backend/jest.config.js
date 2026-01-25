@@ -1,6 +1,7 @@
 export default {
-    testEnvironment: "node",
     transform: {},
+    testEnvironment: "node",
     verbose: true,
-    testTimeout: 10000,
+    setupFilesAfterEnv: ["./tests/setup.js"],
+    setupFiles: ["./tests/env-setup.js"],
 };

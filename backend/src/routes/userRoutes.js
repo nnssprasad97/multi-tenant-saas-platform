@@ -7,7 +7,7 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/userController.js";
-import { validate, createUserSchema } from "../middleware/validate.js";
+import { validate, createUserSchema, updateUserSchema } from "../middleware/validate.js";
 
 const router = express.Router();
 
@@ -31,6 +31,7 @@ router.get(
 router.put(
   "/users/:userId",
   authenticate,
+  validate(updateUserSchema),
   updateUser
 );
 

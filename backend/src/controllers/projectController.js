@@ -59,6 +59,41 @@ export const createProject = async (req, res) => {
 };
 
 /* ===============================
+   GET PROJECT DETAILS (API 16)
+================================ */
+export const getProjectById = async (req, res) => {
+  const { projectId } = req.params;
+  const { tenantId } = req.user;
+
+  try {
+    const projectResult = await pool.query(
+      `SELECT p.*, u.full_name as creator_name 
+       FROM projects p
+       LEFT JOIN users u ON p.created_by = u.id
+       WHERE p.id = $1 AND p.tenant_id = $2`,
+      [projectId, tenantId]
+    );
+
+    if (projectResult.rowCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: projectResult.rows[0],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch project details",
+    });
+  }
+};
+
+/* ===============================
    LIST PROJECTS (API 13)
 ================================ */
 export const listProjects = async (req, res) => {
@@ -84,7 +119,7 @@ export const listProjects = async (req, res) => {
     }
 
     const projectsResult = await pool.query(
-  `SELECT 
+      `SELECT 
       p.id,
       p.name,
       p.description,
@@ -98,8 +133,8 @@ export const listProjects = async (req, res) => {
    LEFT JOIN users u ON p.created_by = u.id
    WHERE p.tenant_id = $1
    ORDER BY p.created_at DESC`,
-  [tenantId]
-);
+      [tenantId]
+    );
 
 
     const countResult = await pool.query(

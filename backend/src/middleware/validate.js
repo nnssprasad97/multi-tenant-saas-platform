@@ -60,3 +60,10 @@ export const createUserSchema = Joi.object({
     fullName: Joi.string().min(3).required(),
     role: Joi.string().valid("user", "tenant_admin").default("user"),
 });
+
+// Schema for User Update
+export const updateUserSchema = Joi.object({
+    fullName: Joi.string().min(3).optional(),
+    role: Joi.string().valid("user", "tenant_admin").optional(),
+    isActive: Joi.boolean().optional(),
+});

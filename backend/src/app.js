@@ -22,6 +22,8 @@ app.use(express.json());
 
 /* ✅ SECURITY HEADERS */
 app.use(helmet());
+import xss from 'xss-clean';
+app.use(xss());
 
 /* ✅ RATE LIMITING */
 const limiter = rateLimit({
@@ -63,12 +65,18 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
+/* ✅ ERROR HANDLER */
+import { errorHandler } from "./middleware/errorMiddleware.js";
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 5000;
 
-initDb().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+if (process.env.NODE_ENV !== "test") {
+  initDb().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
   });
-});
+}
 
 export default app;

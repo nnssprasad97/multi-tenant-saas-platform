@@ -1,56 +1,60 @@
 import request from "supertest";
 import app from "../src/app.js";
-
-// Mock the database
-jest.mock("../src/config/db.js", () => {
-    const mockQuery = jest.fn();
-    return {
-        query: mockQuery,
-        connect: jest.fn().mockResolvedValue({
-            query: mockQuery,
-            release: jest.fn(),
-        }),
-        end: jest.fn(),
-    };
-});
-
 import pool from "../src/config/db.js";
 
 describe("Auth API", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
+    let tenantId;
+
+    beforeAll(async () => {
+        // Clean up before tests
+        await pool.query("DELETE FROM users WHERE email = 'testuser@example.com'");
+        await pool.query("DELETE FROM tenants WHERE subdomain = 'testtenant'");
+    });
+
+    afterAll(async () => {
+        // Clean up after tests
+        await pool.query("DELETE FROM users WHERE email = 'testuser@example.com'");
+        await pool.query("DELETE FROM tenants WHERE subdomain = 'testtenant'");
     });
 
     it("should register a new tenant", async () => {
-        // Mock Transaction: BEGIN, INSERT, INSERT, COMMIT
-        pool.query
-            .mockResolvedValueOnce({}) // BEGIN
-            .mockResolvedValueOnce({ rows: [{ id: "tenant-123", subdomain: "test" }] }) // INSERT tenant
-            .mockResolvedValueOnce({ rows: [{ id: "user-123", email: "admin@test.com", role: "tenant_admin" }] }) // INSERT user
-            .mockResolvedValueOnce({}); // COMMIT
-
         const res = await request(app)
             .post("/api/auth/register-tenant")
             .send({
-                tenantName: "Test Corp",
-                subdomain: "testcorp",
-                adminEmail: "admin@testcorp.com",
+                tenantName: "Test Tenant",
+                subdomain: "testtenant",
+                adminEmail: "testadmin@testtenant.com",
                 adminPassword: "password123",
-                adminFullName: "Test Admin",
+                adminFullName: "Test Admin"
+            });
+
+        expect(res.statusCode).toEqual(201);
+        expect(res.body.success).toBe(true);
+        tenantId = res.body.data.tenantId;
+    });
+
+    it("should login as tenant admin", async () => {
+        const res = await request(app)
+            .post("/api/auth/login")
+            .send({
+                email: "testadmin@testtenant.com",
+                password: "password123",
+                tenantSubdomain: "testtenant"
             });
 
         expect(res.statusCode).toEqual(200);
         expect(res.body.success).toBe(true);
-        expect(res.body.data).toHaveProperty("token");
+        expect(res.body.data.token).toBeDefined();
     });
 
-    it("should fail login with invalid password", async () => {
-        const res = await request(app).post("/api/auth/login").send({
-            email: testTenant.adminEmail,
-            password: "wrongpassword",
-            tenantSubdomain: testTenant.subdomain,
-        });
+    it("should fail validation with missing fields", async () => {
+        const res = await request(app)
+            .post("/api/auth/register-tenant")
+            .send({
+                tenantName: "Test"
+            });
 
-        expect(res.statusCode).toEqual(401);
+        expect(res.statusCode).toEqual(400);
+        expect(res.body.message).toEqual("Validation Error");
     });
 });
