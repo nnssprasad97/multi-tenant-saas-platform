@@ -1,0 +1,15 @@
+import request from "supertest";
+import app from "../src/app.js";
+import pool from "../src/config/db.js";
+
+describe("Health Check API", () => {
+    afterAll(async () => {
+        await pool.end();
+    });
+
+    it("should return 200 OK", async () => {
+        const res = await request(app).get("/api/health");
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toHaveProperty("status", "ok");
+    });
+});
