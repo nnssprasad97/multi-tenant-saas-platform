@@ -170,44 +170,46 @@ We chose **Docker** for containerization and **Docker Compose** for orchestratio
 
 ## 3. Security Considerations
 
-Security is critical in multi-tenant systems because a single vulnerability can affect multiple organizations.
+## 3. Security Considerations
 
-### **1. Data Isolation**
+Security is paramount in multi-tenant systems. A breach in one tenant's isolation can catastrophically affect all organizations on the platform. We have implemented a defense-in-depth strategy covering data, authentication, and infrastructure.
 
-- All queries are filtered using `tenant_id`
-- Tenant ID is extracted from JWT, not request body
-- Super admin bypasses tenant filter safely
+### **1. Data Isolation Strategy**
 
----
+The most critical security requirement is preventing cross-tenant data leakage. We enforce this through:
 
-### **2. Authentication & Authorization**
+*   **Logical Isolation:** Every query to a tenant-specific table *must* include a `WHERE tenant_id = $1` clause. This is not left to chance; our `tenantMiddleware` ensures request context is populated, and controllers extract the tenant ID directly from the validated JWT token, never from the client request body (which could be spoofed).
+*   **Token-Based Authority:** The tenant ID in the JWT `payload` is the single source of truth. Even if a user tries to modify the frontend code to send a different `tenantId`, the backend will ignore it and use the one signed in the token.
+*   **Super Admin Exception:** The Super Admin role bypasses these checks but is implemented with explicit branching logic (`if (role === 'super_admin')`), ensuring that this "god mode" is intentionally invoked and not an accidental default.
 
-- JWT tokens signed with secret key
-- Token expiry: 24 hours
-- Role-based access control (RBAC)
-- Middleware enforces role permissions
+### **2. Authentication & Authorization (AuthN/AuthZ)**
 
----
+*   **Argon2/Bcrypt Hashing:** We do not rely on simple hashing. All passwords are salted and hashed using `bcrypt` (with a work factor of 10) before storage. This renders rainbow table attacks ineffective.
+*   **JWT Security:**
+    *   **Short Expiry:** Access tokens expire in 24 hours, limiting the window of opportunity if a token is stolen.
+    *   **Signature Verification:** Tokens are signed with a strong 256-bit secret key (`HS256`).
+    *   **Minimal Claims:** We only store `userId`, `tenantId`, and `role` in the token. No PII or sensitive state is exposed in the payload.
+*   **Role-Based Access Control (RBAC):** We implemented three strict tiers:
+    *   `super_admin`: System-wide access.
+    *   `tenant_admin`: Full control within their tenant organization.
+    *   `user`: Read/Write access to assigned resources only.
+    *   Middleware functions (`authorize(['tenant_admin'])`) protect every sensitive route.
 
-### **3. Password Security**
+### **3. API & Network Security**
 
-- Passwords are hashed using bcrypt
-- Plain text passwords are never stored
-- Secure comparison during login
+*   **Input Validation:** We validate all incoming data. For instance, subdomains must be alphanumeric, preventing SQL injection via the tenant registry endpoint.
+*   **CORS Policy:** The backend is configured to accept requests *only* from the frontend URL defined in environment variables. This prevents malicious sites from triggering actions on behalf of logged-in users.
+*   **Docker Networking:** The database container is not exposed to the host machine's public interface (in production configuration) or the outside world. Only the backend container can communicate with the database via the internal Docker network on port 5432.
 
----
+### **4. Audit Logging & Compliance**
 
-### **4. API Security**
+*   **Immutable Logs:** We maintained a separate `audit_logs` table.
+*   **Comprehensive Tracking:** Every critical action—creating a user, deleting a project, updating a tenant's subscription—is logged with:
+    *   **Who:** User ID and IP Address.
+    *   **What:** Action type (e.g., `DELETE_PROJECT`) and Entity ID.
+    *   **Where:** Tenant ID.
+*   **Non-Repudiation:** This log allows administrators to reconstruct events during a security incident and attribute actions to specific compromised accounts.
 
-- Input validation on all endpoints
-- Proper HTTP status codes
-- No sensitive data in responses
-- CORS configured strictly
+### **5. Subscription Enforcement**
 
----
-
-### **5. Audit Logging**
-
-- All CREATE, UPDATE, DELETE actions logged
-- Helps detect suspicious activity
-- Supports compliance and debugging
+*   **Resource Quotas:** Security is also about availability. A single tenant attempting to create 1 million users could DOS the system. We enforce strict `max_users` and `max_projects` limits at the database read level before allowing writes, protecting the system from abuse and ensuring fair resource usage ("Noisy Neighbor" mitigation).
