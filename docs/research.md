@@ -87,79 +87,84 @@ This architecture delivers a production-ready foundation that is easy to maintai
 
 ## 2. Technology Stack Justification
 
-### **Backend**
+Selecting the right technology stack is pivotal for the long-term success of a SaaS platform. Our choices prioritize ecosystem maturity, performance, developer experience, and suitability for multi-tenant architectures.
 
-**Node.js + Express.js**
+### **Backend: Node.js + Express.js**
 
-- Lightweight and fast
-- Large ecosystem
-- Easy JWT authentication
-- Well-suited for REST APIs
-- Simple integration with PostgreSQL
+**Selection:**
+We chose **Node.js** with the **Express.js** framework.
 
-**Alternatives considered:**
+**Justification:**
+*   **Asynchronous I/O:** Node.js's non-blocking, event-driven architecture is ideal for I/O-heavy applications like task management systems where many concurrent requests (CRUD operations) occur.
+*   **Unified Language:** Using JavaScript for both frontend and backend ("Universal JavaScript") reduces context switching for developers and allows code sharing (e.g., validation logic, types).
+*   **Rich Ecosystem:** The npm registry provides robust libraries for every requirement of this project, including `jsonwebtoken` for auth, `pg` for database interaction, and `bcrypt` for security.
+*   **Express.js Flexibility:** Express is unopinionated, allowing us to structure our multi-tenant middleware exactly as needed without fighting against framework conventions.
 
-- Django (Python): heavier for simple REST APIs
-- Spring Boot (Java): too complex for project scope
-
----
-
-### **Frontend**
-
-**React.js**
-
-- Component-based architecture
-- Excellent for dashboards
-- Strong ecosystem
-- Easy role-based UI rendering
-- Works well with REST APIs
-
-**Alternatives considered:**
-
-- Angular (steeper learning curve)
-- Vue (smaller ecosystem)
+**Alternatives Considered:**
+*   **Python (Django/FastAPI):** Django is excellent but heavier. Its built-in ORM makes multi-tenancy implementation specific to its paradigms, which can be restrictive. FastAPI is great but has a smaller ecosystem than Express.
+*   **Java (Spring Boot):** Spring Boot offers robust enterprise features but introduces significant boilerplate and startup time overhead, making it less ideal for a rapid-development containerized evaluation.
 
 ---
 
-### **Database**
+### **Frontend: React.js**
 
-**PostgreSQL**
+**Selection:**
+We chose **React.js** (bootstrapped with Vite).
 
-- Strong relational integrity
-- Excellent indexing support
-- ACID compliant
-- Widely used in SaaS platforms
+**Justification:**
+*   **Component-Driven Architecture:** React's component model is perfect for building complex dashboards (Projects, Tasks, Users) where UI elements are reused frequently.
+*   **Virtual DOM Performance:** React efficiently updates the DOM, providing a snappy user experience even when managing large lists of tasks or projects.
+*   **State Management:** React's hooks (`useState`, `useContext`) provide a clean way to manage authentication state and tenant contexts without needing heavy external libraries like Redux for this scope.
+*   **Vite Build Tool:** Vite was chosen over Create-React-App for its superior development server speed and optimized production builds.
 
-**Alternatives considered:**
-
-- MySQL (less strict constraints)
-- MongoDB (not ideal for relational multi-tenant data)
-
----
-
-### **Authentication**
-
-**JWT (JSON Web Tokens)**
-
-- Stateless
-- Scales well
-- Works perfectly with microservices
-- No session storage required
-
-**Alternatives considered:**
-
-- Session-based auth (harder to scale)
+**Alternatives Considered:**
+*   **Angular:** Offers a "batteries-included" framework but comes with a steep learning curve and verbose boilerplate.
+*   **Vue.js:** A strong contender, but React's job market dominance and ecosystem for SaaS UI components (like Lucide React) made it the safer choice.
 
 ---
 
-### **Containerization**
+### **Database: PostgreSQL**
 
-**Docker + Docker Compose**
+**Selection:**
+We chose **PostgreSQL 15**.
 
-- Consistent environments
-- One-command deployment
-- Easy evaluation
-- Industry-standard DevOps practice
+**Justification:**
+*   **Advanced Relational Features:** Postgres offers robust support for complex relationships (Tenants -> Users -> Projects -> Tasks) and enforces referential integrity with cascading deletes, which is critical for data consistency.
+*   **JSONB Support:** Unlike MySQL, Postgres has first-class JSON support. This future-proofs our application, allowing us to store flexible tenant configuration or settings without changing the schema.
+*   **Row Level Security (RLS):** While we implemented isolation in the application layer for this project, Postgres offers native RLS, providing a path to defense-in-depth security in the future.
+*   **ACID Compliance:** Essential for handling subscriptions and critical user data safely.
+
+**Alternatives Considered:**
+*   **MongoDB:** While easy to scale, its non-relational nature makes enforcing strict multi-tenant boundaries and complex joins (e.g., "Get all tasks for this tenant assigned to this user") more complex and error-prone.
+*   **MySQL:** A solid choice, but Postgres is generally preferred in the Node.js community for its stricter SQL standards and feature set.
+
+---
+
+### **Authentication: JWT (JSON Web Tokens)**
+
+**Selection:**
+We chose **Stateless JWT Authentication**.
+
+**Justification:**
+*   **Stateless Scalability:** JWTs require no server-side session storage. This means we can horizontally scale our backend API simply by adding more containers, without needing a shared Redis session store.
+*   **Mobile Ready:** JWTs are standard for mobile API authentication, giving us flexibility for future client expansion.
+*   **Decentralized Verification:** The token itself contains the user's role and tenant ID. This allow us to make authorization decisions in middleware immediately without hitting the database for every single permission check (though we do validate existence).
+
+**Alternatives Considered:**
+*   **Server-Side Sessions:** Secure, but requires sticky sessions or a shared session store (Redis), adding infrastructure complexity (another container to manage).
+*   **OAuth2 / Auth0:** integrating a third-party provider was deemed out of scope and introduces external dependencies that complicate the self-contained Docker requirement.
+
+---
+
+### **Containerization: Docker & Docker Compose**
+
+**Selection:**
+We chose **Docker** for containerization and **Docker Compose** for orchestration.
+
+**Justification:**
+*   **Reproducibility:** "It works on my machine" is solved. The environment is defined as code.
+*   **Isolation:** The database, backend, and frontend run in isolated environments with defined networking, simulating a production microservices cluster.
+*   **Ease of Evaluation:** Instructors can start the entire stack with a single command (`docker-compose up -d`), guaranteeing that dependencies (Node version, Postgres version) are exactly as intended.
 
 ---
 
