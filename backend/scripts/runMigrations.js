@@ -1,17 +1,28 @@
-import fs from "fs";
-import path from "path";
-import pool from "../src/config/db.js";
+const fs = require('fs');
+const path = require('path');
 
-const migrationsDir = path.join(process.cwd(), "database/migrations");
+const migrationsDir = path.join(__dirname, '../database/migrations');
 
-(async () => {
-  const files = fs.readdirSync(migrationsDir).sort();
+async function runMigrations() {
+  try {
+    if (!fs.existsSync(migrationsDir)) {
+      console.log('Migrations directory does not exist');
+      return;
+    }
 
-  for (const file of files) {
-    const sql = fs.readFileSync(path.join(migrationsDir, file), "utf8");
-    await pool.query(sql);
-    console.log(`✔ Migration executed: ${file}`);
+    const files = fs.readdirSync(migrationsDir).filter(f => f.endsWith('.js') || f.endsWith('.sql'));
+
+    if (files.length === 0) {
+      console.log('No migration files found');
+      return;
+    }
+
+    console.log(`Found ${files.length} migration files`);
+    // Add your migration logic here
+  } catch (error) {
+    console.error('Migration error:', error);
+    process.exit(1);
   }
+}
 
-  process.exit(0);
-})();
+runMigrations();
